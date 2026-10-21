@@ -949,6 +949,260 @@ function renderDashboardPage({ csrf, dbStatus }) {
       .table-responsive { overflow-x: auto; }
       .form-row { grid-template-columns: 1fr; }
     }
+
+    /* Wavy animations between switch for milliseconds only (440ms) */
+    .wavy-switch-wrapper {
+      position: relative;
+    }
+    .wavy-sweep-effect {
+      position: absolute;
+      inset: -6px;
+      pointer-events: none;
+      z-index: 60;
+      opacity: 0;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .wavy-sweep-effect.active {
+      animation: waveSweepKeyframe 440ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    @keyframes waveSweepKeyframe {
+      0% {
+        opacity: 0.95;
+        clip-path: polygon(0 0, 0% 0, 0% 100%, 0% 100%);
+        background: linear-gradient(105deg, rgba(245, 158, 11, 0.35) 0%, rgba(37, 99, 235, 0.45) 50%, rgba(245, 158, 11, 0.4) 100%);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+      }
+      35% {
+        opacity: 0.85;
+        clip-path: polygon(0 0, 65% 0, 48% 100%, 0% 100%);
+      }
+      70% {
+        opacity: 0.55;
+        clip-path: polygon(35% 0, 100% 0, 85% 100%, 20% 100%);
+      }
+      100% {
+        opacity: 0;
+        clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+      }
+    }
+
+    .wavy-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    .wavy-btn.waving::after {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.5) 10%, transparent 65%);
+      animation: waveBtnRipple 420ms ease-out forwards;
+      pointer-events: none;
+    }
+    @keyframes waveBtnRipple {
+      0% { transform: scale(0.2); opacity: 0.95; border-radius: 50%; }
+      50% { transform: scale(1.3); opacity: 0.5; border-radius: 40% 60% 60% 40% / 40% 50% 50% 60%; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    /* View Switcher Bar */
+    .view-switch-bar {
+      display: inline-flex;
+      background: #e2e8f0;
+      padding: 3px;
+      border-radius: 8px;
+      gap: 3px;
+    }
+    .btn-switch-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: 0.45rem 0.875rem;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-switch-tab:hover {
+      color: #0f172a;
+    }
+    .btn-switch-tab.active {
+      background: #ffffff;
+      color: #0f172a;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Visuals Dashboard Components */
+    .visuals-dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .visuals-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .visual-stat-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      position: relative;
+      overflow: hidden;
+    }
+    .visual-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--amber-500);
+    }
+    .visual-stat-card.blue::before { background: var(--blue-600); }
+    .visual-stat-card.teal::before { background: var(--teal-600); }
+    .visual-stat-card.rose::before { background: var(--rose-600); }
+    .visual-stat-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 0.375rem;
+    }
+    .visual-stat-val {
+      font-size: 1.625rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+    .visual-stat-sub {
+      font-size: 0.75rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .visuals-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 960px) {
+      .visuals-grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .chart-panel-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .chart-title {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .chart-badge {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    /* Pipeline funnel flow */
+    .pipeline-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+    .pipeline-stage {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+    }
+    .pipeline-stage-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+    .pipeline-progress-track {
+      width: 100%;
+      height: 10px;
+      background: #f1f5f9;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .pipeline-progress-fill {
+      height: 100%;
+      border-radius: 6px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* County bar items */
+    .county-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+    .county-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.8125rem;
+    }
+    .county-name {
+      width: 140px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .county-bar-track {
+      flex: 1;
+      height: 8px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .county-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #ea580c);
+      border-radius: 4px;
+      transition: width 0.6s ease;
+    }
+    .county-count {
+      font-weight: 700;
+      color: #0f172a;
+      width: 32px;
+      text-align: right;
+    }
   </style>
 </head>
 <body>
@@ -984,80 +1238,234 @@ function renderDashboardPage({ csrf, dbStatus }) {
 
   <!-- Main View -->
   <main class="main-wrap">
-    <!-- Metrics Grid -->
-    <div class="metrics-grid" id="metricsGrid">
-      <div class="metric-card" onclick="filterByMetric('all')">
-        <div class="metric-label">Total Bookings</div>
-        <div class="metric-value" id="metricTotal">--</div>
+    <!-- View Switcher with Wavy Animation (milliseconds only) -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+      <div class="view-switch-bar">
+        <button id="viewSwitchVisuals" class="btn-switch-tab wavy-btn active" onclick="switchAdminView('visuals', this)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          Visuals Dashboard
+        </button>
+        <button id="viewSwitchTable" class="btn-switch-tab wavy-btn" onclick="switchAdminView('table', this)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          Bookings Data Table
+        </button>
+        <button id="viewSwitchBoth" class="btn-switch-tab wavy-btn" onclick="switchAdminView('both', this)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          Unified View
+        </button>
       </div>
-      <div class="metric-card" onclick="filterByMetric('Pending')">
-        <div class="metric-label">Pending Reviews</div>
-        <div class="metric-value" id="metricPending" style="color:var(--amber-600);">--</div>
-      </div>
-      <div class="metric-card" onclick="filterByMetric('Confirmed')">
-        <div class="metric-label">Confirmed</div>
-        <div class="metric-value" id="metricConfirmed" style="color:var(--blue-600);">--</div>
-      </div>
-      <div class="metric-card" onclick="filterByMetric('In Progress')">
-        <div class="metric-label">In Progress</div>
-        <div class="metric-value" id="metricInProgress" style="color:#ca8a04;">--</div>
-      </div>
-      <div class="metric-card" onclick="filterByMetric('Completed')">
-        <div class="metric-label">Completed</div>
-        <div class="metric-value" id="metricCompleted" style="color:var(--teal-600);">--</div>
-      </div>
-      <div class="metric-card" onclick="filterByMetric('Cancelled')">
-        <div class="metric-label">Cancelled</div>
-        <div class="metric-value" id="metricCancelled" style="color:var(--rose-600);">--</div>
+
+      <div style="display:flex; align-items:center; gap:0.5rem; font-size:0.75rem; color:#64748b;">
+        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+        <span>Real-time Operational Visuals</span>
       </div>
     </div>
 
-    <!-- Controls Bar -->
-    <div class="controls-bar">
-      <div class="search-wrap">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="Search by name, phone, address, or ID...">
-      </div>
-      <div class="filters-group">
-        <select id="statusFilter" onchange="loadBookings()">
-          <option value="">All Statuses</option>
-          <option value="Pending">Pending</option>
-          <option value="Confirmed">Confirmed</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Completed">Completed</option>
-          <option value="Cancelled">Cancelled</option>
-        </select>
-        <select id="serviceFilter" onchange="loadBookings()">
-          <option value="">All Services</option>
-          <option value="Roof Inspection &amp; Estimate">Roof Inspection &amp; Estimate</option>
-          <option value="Asphalt Shingle Replacement">Asphalt Shingle Replacement</option>
-          <option value="Standing Seam Metal Roofing">Standing Seam Metal Roofing</option>
-          <option value="Roof Repair &amp; Hail Assessments">Roof Repair &amp; Hail Assessments</option>
-          <option value="Commercial Flat &amp; TPO Systems">Commercial Flat &amp; TPO Systems</option>
-          <option value="Apartment &amp; HOA Communities">Apartment &amp; HOA Communities</option>
-          <option value="Fiber Cement &amp; Siding">Fiber Cement &amp; Siding</option>
-        </select>
-        <select id="sortSelect" onchange="loadBookings()">
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-          <option value="appointment">Appointment Date</option>
-        </select>
-        <button class="btn-action btn-outline" onclick="exportCsv()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export CSV
-        </button>
-        <button class="btn-action btn-clay" onclick="openNewModal()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          New Booking
-        </button>
-      </div>
-    </div>
+    <!-- Wavy Switch Wrapper Container -->
+    <div id="dashboardContentWrap" class="wavy-switch-wrapper">
+      <div id="wavySweepElement" class="wavy-sweep-effect"></div>
 
-    <!-- Bookings Table -->
-    <div class="table-container table-responsive">
-      <table>
-        <thead>
-          <tr>
+      <!-- Metrics Grid (Quick Status Filter Pills) -->
+      <div class="metrics-grid" id="metricsGrid">
+        <div class="metric-card wavy-btn" onclick="filterByMetric('all', this)">
+          <div class="metric-label">Total Bookings</div>
+          <div class="metric-value" id="metricTotal">--</div>
+        </div>
+        <div class="metric-card wavy-btn" onclick="filterByMetric('Pending', this)">
+          <div class="metric-label">Pending Reviews</div>
+          <div class="metric-value" id="metricPending" style="color:var(--amber-600);">--</div>
+        </div>
+        <div class="metric-card wavy-btn" onclick="filterByMetric('Confirmed', this)">
+          <div class="metric-label">Confirmed</div>
+          <div class="metric-value" id="metricConfirmed" style="color:var(--blue-600);">--</div>
+        </div>
+        <div class="metric-card wavy-btn" onclick="filterByMetric('In Progress', this)">
+          <div class="metric-label">In Progress</div>
+          <div class="metric-value" id="metricInProgress" style="color:#ca8a04;">--</div>
+        </div>
+        <div class="metric-card wavy-btn" onclick="filterByMetric('Completed', this)">
+          <div class="metric-label">Completed</div>
+          <div class="metric-value" id="metricCompleted" style="color:var(--teal-600);">--</div>
+        </div>
+        <div class="metric-card wavy-btn" onclick="filterByMetric('Cancelled', this)">
+          <div class="metric-label">Cancelled</div>
+          <div class="metric-value" id="metricCancelled" style="color:var(--rose-600);">--</div>
+        </div>
+      </div>
+
+      <!-- Visuals Dashboard Section -->
+      <section id="visualsDashboard" class="visuals-dashboard">
+        <!-- 4 Visual KPI Tiles -->
+        <div class="visuals-grid-4">
+          <div class="visual-stat-card">
+            <div class="visual-stat-label">Projected Pipeline Value</div>
+            <div class="visual-stat-val" id="visualPipelineVal">$0</div>
+            <div class="visual-stat-sub">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+              <span>Calculated from active project scopes</span>
+            </div>
+          </div>
+          <div class="visual-stat-card blue">
+            <div class="visual-stat-label">Average Job Ticket</div>
+            <div class="visual-stat-val" id="visualAvgTicket">$0</div>
+            <div class="visual-stat-sub">
+              <span>Standard vs. standing seam metal split</span>
+            </div>
+          </div>
+          <div class="visual-stat-card teal">
+            <div class="visual-stat-label">Intake Conversion Ratio</div>
+            <div class="visual-stat-val" id="visualConversionRate">0%</div>
+            <div class="visual-stat-sub">
+              <span>Inquiry to confirmed inspection rate</span>
+            </div>
+          </div>
+          <div class="visual-stat-card rose">
+            <div class="visual-stat-label">Active Job Dispatch Queue</div>
+            <div class="visual-stat-val" id="visualActiveQueue">0</div>
+            <div class="visual-stat-sub">
+              <span>Crews assigned in Greater Houston</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Analytics: Service Donut + 7-Day Trend -->
+        <div class="visuals-grid-2">
+          <!-- Service Distribution Donut Chart -->
+          <div class="chart-panel-card">
+            <div class="chart-header">
+              <h3 class="chart-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber-500)" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                Service Category Distribution
+              </h3>
+              <span class="chart-badge" id="visualTotalServices">0 Total Jobs</span>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-around; flex-wrap:wrap; gap:1.5rem;">
+              <div style="position:relative; width:170px; height:170px;">
+                <svg id="donutSvg" width="170" height="170" viewBox="0 0 42 42" style="transform: rotate(-90deg);"></svg>
+                <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+                  <span style="font-size:1.375rem; font-weight:800; color:#0f172a;" id="donutCenterCount">0</span>
+                  <span style="font-size:0.6875rem; color:#64748b; text-transform:uppercase;">Projects</span>
+                </div>
+              </div>
+              <div id="serviceLegendList" style="flex:1; min-width:180px; display:flex; flex-direction:column; gap:0.5rem; font-size:0.8125rem;">
+                <!-- Filled dynamically by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 7-Day Activity Bar Chart -->
+          <div class="chart-panel-card">
+            <div class="chart-header">
+              <h3 class="chart-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--blue-600)" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Weekly Intake Velocity (7 Days)
+              </h3>
+              <span class="chart-badge">Daily Velocity</span>
+            </div>
+            <div style="height:170px; display:flex; align-items:flex-end; gap:0.75rem; padding:0.5rem 0;" id="weeklyBarsContainer">
+              <!-- Filled dynamically by JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 2-Column Pipeline: Conversion Funnel + Regional Heatmap -->
+        <div class="visuals-grid-2">
+          <!-- Conversion Funnel -->
+          <div class="chart-panel-card">
+            <div class="chart-header">
+              <h3 class="chart-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                Project Lifecycle &amp; Conversion Funnel
+              </h3>
+              <span class="chart-badge">Status Flow</span>
+            </div>
+            <div class="pipeline-flow" id="pipelineFlowContainer">
+              <!-- Filled dynamically by JS -->
+            </div>
+          </div>
+
+          <!-- Regional County Progress Breakdown -->
+          <div class="chart-panel-card">
+            <div class="chart-header">
+              <h3 class="chart-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--rose-600)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+                Greater Houston Regional Demand
+              </h3>
+              <span class="chart-badge">18 Counties</span>
+            </div>
+            <div class="county-list" id="countyListContainer">
+              <!-- Filled dynamically by JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bookings Table Section -->
+      <section id="tableSectionWrap">
+        <!-- Controls Bar -->
+        <div class="controls-bar">
+          <div class="search-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search by name, phone, address, or ID...">
+          </div>
+          <div class="filters-group">
+            <select id="statusFilter" onchange="loadBookings()">
+              <option value="">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+            <select id="serviceFilter" onchange="loadBookings()">
+              <option value="">All Services</option>
+              <option value="Roof Inspection &amp; Estimate">Roof Inspection &amp; Estimate</option>
+              <option value="Asphalt Shingle Replacement">Asphalt Shingle Replacement</option>
+              <option value="Standing Seam Metal Roofing">Standing Seam Metal Roofing</option>
+              <option value="Roof Repair &amp; Hail Assessments">Roof Repair &amp; Hail Assessments</option>
+              <option value="Commercial Flat &amp; TPO Systems">Commercial Flat &amp; TPO Systems</option>
+              <option value="Apartment &amp; HOA Communities">Apartment &amp; HOA Communities</option>
+              <option value="Fiber Cement &amp; Siding">Fiber Cement &amp; Siding</option>
+            </select>
+            <select id="sortSelect" onchange="loadBookings()">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="appointment">Appointment Date</option>
+            </select>
+            <button class="btn-action btn-outline wavy-btn" onclick="exportCsv()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export CSV
+            </button>
+            <button class="btn-action btn-clay wavy-btn" onclick="openNewModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New Booking
+            </button>
+          </div>
+        </div>
+
+        <!-- Bookings Table -->
+        <div class="table-container table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Customer</th>
+                <th>Service Requested</th>
+                <th>Appointment</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsTbody">
+              <tr>
+                <td colspan="6" style="text-align:center; padding: 3rem; color:#94a3b8;">Loading bookings...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
             <th>Booking ID</th>
             <th>Customer</th>
             <th>Service Requested</th>
@@ -1363,9 +1771,52 @@ function renderDashboardPage({ csrf, dbStatus }) {
       return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[m]);
     }
 
-    // Metric card filter click
-    function filterByMetric(status) {
+    // Wavy animations between switch for milliseconds only (440ms)
+    function triggerWavySwitch(containerId, btn) {
+      if (btn) {
+        btn.classList.add('waving');
+        setTimeout(() => btn.classList.remove('waving'), 420);
+      }
+      const sweep = document.getElementById('wavySweepElement');
+      if (sweep) {
+        sweep.classList.remove('active');
+        void sweep.offsetWidth; // force browser layout reflow
+        sweep.classList.add('active');
+        setTimeout(() => sweep.classList.remove('active'), 440);
+      }
+    }
+
+    // Switch between Visuals Dashboard and Bookings Table views with Wavy effect
+    function switchAdminView(mode, btn) {
+      triggerWavySwitch('dashboardContentWrap', btn);
+
+      document.querySelectorAll('.btn-switch-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const visualsSection = document.getElementById('visualsDashboard');
+      const tableSection = document.getElementById('tableSectionWrap');
+
+      if (mode === 'visuals') {
+        visualsSection.style.display = 'flex';
+        tableSection.style.display = 'none';
+      } else if (mode === 'table') {
+        visualsSection.style.display = 'none';
+        tableSection.style.display = 'block';
+      } else {
+        // Unified / Both
+        visualsSection.style.display = 'flex';
+        tableSection.style.display = 'block';
+      }
+    }
+
+    // Metric card filter click with wavy ripple
+    function filterByMetric(status, cardEl) {
+      if (cardEl) {
+        triggerWavySwitch('dashboardContentWrap', cardEl);
+      }
       document.querySelectorAll('.metric-card').forEach(c => c.classList.remove('active'));
+      if (cardEl) cardEl.classList.add('active');
+
       const statusSelect = document.getElementById('statusFilter');
       if (status === 'all') {
         statusSelect.value = '';
@@ -1373,6 +1824,230 @@ function renderDashboardPage({ csrf, dbStatus }) {
         statusSelect.value = status;
       }
       loadBookings();
+    }
+
+    // Load Bookings Table & Update Visuals Dashboard
+    async function loadBookings() {
+      const search = document.getElementById('searchInput').value.trim();
+      const status = document.getElementById('statusFilter').value;
+      const service = document.getElementById('serviceFilter').value;
+      const sort = document.getElementById('sortSelect').value;
+
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (status) params.append('status', status);
+      if (service) params.append('service', service);
+      if (sort) params.append('sort', sort);
+
+      try {
+        const res = await fetch('/admin/api/bookings?' + params.toString());
+        const data = await res.json();
+        if (data.success) {
+          currentBookings = data.bookings || [];
+          renderTable(currentBookings);
+          renderVisualsDashboard(currentBookings);
+        }
+      } catch (err) {
+        document.getElementById('bookingsTbody').innerHTML = '<tr><td colspan="6" style="text-align:center; color:#ef4444; padding:2rem;">Failed to load bookings</td></tr>';
+      }
+    }
+
+    // Render Visuals Dashboard Charts & Analytics
+    function renderVisualsDashboard(bookings) {
+      if (!bookings) bookings = [];
+      const total = bookings.length;
+
+      // 1. Compute Pipeline Value by scope
+      const serviceValues = {
+        'Asphalt Shingle Replacement': 13500,
+        'Standing Seam Metal Roofing': 28500,
+        'Commercial Flat & TPO Systems': 42000,
+        'Roof Repair & Hail Assessments': 2400,
+        'Fiber Cement & Siding': 12000,
+        'Apartment & HOA Communities': 38000,
+        'Roof Inspection & Estimate': 450
+      };
+
+      let totalPipeline = 0;
+      let confirmedOrActive = 0;
+      const serviceCounts = {};
+      const countyCounts = {
+        'Harris County': 0,
+        'Montgomery County': 0,
+        'Fort Bend County': 0,
+        'Brazoria & Galveston': 0,
+        'Surrounding Texas': 0
+      };
+
+      bookings.forEach(b => {
+        const val = serviceValues[b.serviceType] || 8500;
+        if (b.status !== 'Cancelled') {
+          totalPipeline += val;
+        }
+        if (b.status === 'Confirmed' || b.status === 'In Progress') {
+          confirmedOrActive++;
+        }
+
+        // Service count
+        serviceCounts[b.serviceType] = (serviceCounts[b.serviceType] || 0) + 1;
+
+        // County categorization
+        const addr = (b.address || '').toLowerCase();
+        if (addr.includes('harris') || addr.includes('cypress') || addr.includes('houston') || addr.includes('katy') || addr.includes('tomball')) {
+          countyCounts['Harris County']++;
+        } else if (addr.includes('woodlands') || addr.includes('montgomery') || addr.includes('conroe') || addr.includes('spring')) {
+          countyCounts['Montgomery County']++;
+        } else if (addr.includes('fort bend') || addr.includes('sugar land') || addr.includes('missouri city') || addr.includes('richmond')) {
+          countyCounts['Fort Bend County']++;
+        } else if (addr.includes('brazoria') || addr.includes('galveston') || addr.includes('pearland') || addr.includes('friendswood')) {
+          countyCounts['Brazoria & Galveston']++;
+        } else {
+          countyCounts['Surrounding Texas']++;
+        }
+      });
+
+      const avgTicket = total > 0 ? Math.round(totalPipeline / total) : 0;
+      const nonPending = bookings.filter(b => b.status === 'Confirmed' || b.status === 'In Progress' || b.status === 'Completed').length;
+      const conversionRate = total > 0 ? Math.round((nonPending / total) * 100) : 0;
+
+      // Update KPI Tiles
+      document.getElementById('visualPipelineVal').textContent = '$' + totalPipeline.toLocaleString();
+      document.getElementById('visualAvgTicket').textContent = '$' + avgTicket.toLocaleString();
+      document.getElementById('visualConversionRate').textContent = conversionRate + '%';
+      document.getElementById('visualActiveQueue').textContent = confirmedOrActive + ' Active';
+      document.getElementById('donutCenterCount').textContent = total;
+      document.getElementById('visualTotalServices').textContent = total + ' Total Inquiries';
+
+      // 2. Render SVG Donut Chart
+      const donutSvg = document.getElementById('donutSvg');
+      const legendList = document.getElementById('serviceLegendList');
+      const serviceColors = {
+        'Asphalt Shingle Replacement': '#f59e0b',
+        'Standing Seam Metal Roofing': '#2563eb',
+        'Commercial Flat & TPO Systems': '#8b5cf6',
+        'Roof Repair & Hail Assessments': '#0d9488',
+        'Apartment & HOA Communities': '#0284c7',
+        'Fiber Cement & Siding': '#ea580c',
+        'Roof Inspection & Estimate': '#64748b'
+      };
+
+      let donutHtml = '<circle cx="21" cy="21" r="15.9155" fill="none" stroke="#f1f5f9" stroke-width="6.5"></circle>';
+      let legendHtml = '';
+      let cumulativeOffset = 0;
+
+      const servicesArray = Object.keys(serviceCounts);
+      if (servicesArray.length === 0) {
+        legendHtml = '<div style="color:#94a3b8; font-size:0.8125rem;">No bookings available</div>';
+      } else {
+        servicesArray.forEach(srv => {
+          const count = serviceCounts[srv];
+          const pct = Math.round((count / total) * 100);
+          const color = serviceColors[srv] || '#94a3b8';
+          const dash = pct;
+          const gap = 100 - pct;
+
+          donutHtml += \`
+            <circle cx="21" cy="21" r="15.9155" fill="none"
+              stroke="\${color}" stroke-width="6.5"
+              stroke-dasharray="\${dash} \${gap}"
+              stroke-dashoffset="\${-cumulativeOffset}">
+            </circle>
+          \`;
+          cumulativeOffset += dash;
+
+          legendHtml += \`
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:0.5rem; overflow:hidden;">
+                <span style="width:10px; height:10px; border-radius:3px; background:\${color}; flex-shrink:0;"></span>
+                <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;">\${escapeHtml(srv)}</span>
+              </div>
+              <div style="font-weight:700; color:#0f172a; margin-left:0.5rem;">\${count} <span style="font-weight:400; color:#64748b; font-size:0.75rem;">(\${pct}%)</span></div>
+            </div>
+          \`;
+        });
+      }
+
+      donutSvg.innerHTML = donutHtml;
+      legendList.innerHTML = legendHtml;
+
+      // 3. Render 7-Day Velocity Bar Chart
+      const barsContainer = document.getElementById('weeklyBarsContainer');
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      // Distribute counts over the 7 days
+      const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+      bookings.forEach(b => {
+        const d = b.createdAt ? new Date(b.createdAt).getDay() : 0;
+        // Map 0 (Sun) -> 6, 1 (Mon) -> 0
+        const index = d === 0 ? 6 : d - 1;
+        dayCounts[index]++;
+      });
+      const maxDayCount = Math.max(...dayCounts, 1);
+
+      let barsHtml = '';
+      days.forEach((day, i) => {
+        const count = dayCounts[i];
+        const heightPct = Math.max(Math.round((count / maxDayCount) * 100), 8);
+        const isPeak = count === maxDayCount && count > 0;
+        const barColor = isPeak ? 'linear-gradient(180deg, #f59e0b 0%, #ea580c 100%)' : '#cbd5e1';
+
+        barsHtml += \`
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end;">
+            <span style="font-size:0.6875rem; font-weight:700; color:\${isPeak ? '#b45309' : '#64748b'}; margin-bottom:4px;">\${count}</span>
+            <div style="width:100%; max-width:28px; height:\${heightPct}%; background:\${barColor}; border-radius:4px 4px 0 0; transition:height 0.5s ease;"></div>
+            <span style="font-size:0.6875rem; font-weight:600; color:#64748b; margin-top:6px;">\${day}</span>
+          </div>
+        \`;
+      });
+      barsContainer.innerHTML = barsHtml;
+
+      // 4. Render Conversion Funnel
+      const funnelContainer = document.getElementById('pipelineFlowContainer');
+      const pendingCount = bookings.filter(b => b.status === 'Pending').length;
+      const confirmedCount = bookings.filter(b => b.status === 'Confirmed').length;
+      const inProgressCount = bookings.filter(b => b.status === 'In Progress').length;
+      const completedCount = bookings.filter(b => b.status === 'Completed').length;
+
+      const stages = [
+        { label: 'Stage 1: Intake & Pending Review', count: pendingCount, color: 'linear-gradient(90deg, #f59e0b, #d97706)' },
+        { label: 'Stage 2: Confirmed Field Inspections', count: confirmedCount, color: 'linear-gradient(90deg, #0284c7, #2563eb)' },
+        { label: 'Stage 3: Production & Roofing In-Progress', count: inProgressCount, color: 'linear-gradient(90deg, #eab308, #ca8a04)' },
+        { label: 'Stage 4: Completed & Warranty Sign-Off', count: completedCount, color: 'linear-gradient(90deg, #10b981, #059669)' }
+      ];
+
+      let funnelHtml = '';
+      stages.forEach(st => {
+        const pct = total > 0 ? Math.round((st.count / total) * 100) : 0;
+        funnelHtml += \`
+          <div class="pipeline-stage">
+            <div class="pipeline-stage-header">
+              <span>\${st.label}</span>
+              <span style="color:#0f172a; font-weight:700;">\${st.count} jobs <span style="font-weight:400; color:#64748b;">(\${pct}%)</span></span>
+            </div>
+            <div class="pipeline-progress-track">
+              <div class="pipeline-progress-fill" style="width:\${Math.max(pct, 4)}%; background:\${st.color};"></div>
+            </div>
+          </div>
+        \`;
+      });
+      funnelContainer.innerHTML = funnelHtml;
+
+      // 5. Render County Distribution
+      const countyContainer = document.getElementById('countyListContainer');
+      let countyHtml = '';
+      const countyEntries = Object.entries(countyCounts);
+      countyEntries.forEach(([name, count]) => {
+        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+        countyHtml += \`
+          <div class="county-item">
+            <span class="county-name">\${name}</span>
+            <div class="county-bar-track">
+              <div class="county-bar-fill" style="width:\${Math.max(pct, 3)}%;"></div>
+            </div>
+            <span class="county-count">\${count}</span>
+          </div>
+        \`;
+      });
+      countyContainer.innerHTML = countyHtml;
     }
 
     // Quick Update Status

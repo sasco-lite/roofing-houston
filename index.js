@@ -836,11 +836,63 @@ function renderPublicWebsite() {
       color: var(--color-slate-600);
       cursor: pointer;
       transition: all 0.15s ease;
+      position: relative;
+      overflow: hidden;
     }
     .filter-tab.active, .filter-tab:hover {
       background: var(--color-slate-800);
       color: #ffffff;
       border-color: var(--color-slate-800);
+    }
+    .filter-tab.waving::after {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.5) 10%, transparent 65%);
+      animation: waveBtnRipple 420ms ease-out forwards;
+      pointer-events: none;
+    }
+    @keyframes waveBtnRipple {
+      0% { transform: scale(0.2); opacity: 0.95; border-radius: 50%; }
+      50% { transform: scale(1.3); opacity: 0.5; border-radius: 40% 60% 60% 40% / 40% 50% 50% 60%; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+
+    /* Wavy animations between switch for milliseconds only (440ms) */
+    .wavy-switch-wrapper {
+      position: relative;
+    }
+    .wavy-sweep-effect {
+      position: absolute;
+      inset: -6px;
+      pointer-events: none;
+      z-index: 40;
+      opacity: 0;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .wavy-sweep-effect.active {
+      animation: waveSweepKeyframe 440ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    @keyframes waveSweepKeyframe {
+      0% {
+        opacity: 0.95;
+        clip-path: polygon(0 0, 0% 0, 0% 100%, 0% 100%);
+        background: linear-gradient(105deg, rgba(245, 158, 11, 0.35) 0%, rgba(37, 99, 235, 0.45) 50%, rgba(245, 158, 11, 0.4) 100%);
+        backdrop-filter: blur(3px);
+      }
+      35% {
+        opacity: 0.85;
+        clip-path: polygon(0 0, 65% 0, 48% 100%, 0% 100%);
+      }
+      70% {
+        opacity: 0.55;
+        clip-path: polygon(35% 0, 100% 0, 85% 100%, 20% 100%);
+      }
+      100% {
+        opacity: 0;
+        clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+      }
     }
     .project-card {
       background: #ffffff;
@@ -1417,14 +1469,16 @@ function renderPublicWebsite() {
         </div>
 
         <div class="gallery-filter-tabs">
-          <button class="filter-tab active" onclick="filterGallery('all')">All Projects</button>
-          <button class="filter-tab" onclick="filterGallery('residential')">Residential Shingles</button>
-          <button class="filter-tab" onclick="filterGallery('metal')">Standing Seam Metal</button>
-          <button class="filter-tab" onclick="filterGallery('commercial')">Commercial Flat</button>
-          <button class="filter-tab" onclick="filterGallery('storm')">Storm Restoration</button>
+          <button class="filter-tab active" onclick="filterGallery('all', this)">All Projects</button>
+          <button class="filter-tab" onclick="filterGallery('residential', this)">Residential Shingles</button>
+          <button class="filter-tab" onclick="filterGallery('metal', this)">Standing Seam Metal</button>
+          <button class="filter-tab" onclick="filterGallery('commercial', this)">Commercial Flat</button>
+          <button class="filter-tab" onclick="filterGallery('storm', this)">Storm Restoration</button>
         </div>
 
-        <div class="grid-3" id="galleryGrid">
+        <div class="wavy-switch-wrapper">
+          <div id="galleryWaveSweep" class="wavy-sweep-effect"></div>
+          <div class="grid-3" id="galleryGrid">
           <!-- Project 1 -->
           <div class="project-card" data-cat="residential">
             <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=800&q=80');"></div>
@@ -1516,7 +1570,8 @@ function renderPublicWebsite() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
     <!-- Real Statistics Counter Strip with Counting Effect -->
     <section class="stats-strip" id="statsSection">
@@ -2052,10 +2107,26 @@ function renderPublicWebsite() {
       parent.classList.toggle('open');
     }
 
-    // Gallery Filter Tabs
-    function filterGallery(category) {
+    // Gallery Filter Tabs with Wavy Animation for milliseconds only (440ms)
+    function filterGallery(category, btn) {
+      if (btn) {
+        btn.classList.add('waving');
+        setTimeout(() => btn.classList.remove('waving'), 420);
+      }
+      const sweep = document.getElementById('galleryWaveSweep');
+      if (sweep) {
+        sweep.classList.remove('active');
+        void sweep.offsetWidth; // force browser layout reflow
+        sweep.classList.add('active');
+        setTimeout(() => sweep.classList.remove('active'), 440);
+      }
+
       document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+      if (btn) {
+        btn.classList.add('active');
+      } else if (window.event && window.event.target) {
+        window.event.target.classList.add('active');
+      }
 
       const cards = document.querySelectorAll('.project-card');
       cards.forEach(card => {
