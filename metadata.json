@@ -1,0 +1,6 @@
+{
+  "name": "Houston Roofing & Construction",
+  "description": "Production-ready Houston Roofing & Construction website with online booking system and secure admin dashboard",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

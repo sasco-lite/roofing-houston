@@ -1,0 +1,19 @@
+{
+  "name": "houston-roofing-construction",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Houston Roofing & Construction production full-stack platform with booking system and admin dashboard",
+  "main": "index.js",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "node index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "mongodb": "^6.14.0"
+  }
+}
