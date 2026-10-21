@@ -1518,24 +1518,24 @@ function renderPublicWebsite() {
       </div>
     </section>
 
-    <!-- Real Statistics Counter Strip -->
-    <section class="stats-strip">
+    <!-- Real Statistics Counter Strip with Counting Effect -->
+    <section class="stats-strip" id="statsSection">
       <div class="container">
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2.5rem; text-align: center;">
           <div>
-            <div class="stat-num">4.9★</div>
+            <div class="stat-num" data-target="4.9" data-start="0.0" data-decimals="1" data-suffix="★">0.0★</div>
             <p style="font-size:0.875rem; color:#94a3b8; margin-top:0.5rem;">Google Rating (~325 Verified Reviews)</p>
           </div>
           <div>
-            <div class="stat-num">2009</div>
+            <div class="stat-num" data-target="2009" data-start="1980" data-decimals="0">1980</div>
             <p style="font-size:0.875rem; color:#94a3b8; margin-top:0.5rem;">Serving Greater Houston Since</p>
           </div>
           <div>
-            <div class="stat-num">20+ Yrs</div>
+            <div class="stat-num" data-target="20" data-start="0" data-decimals="0" data-suffix="+ Yrs">0+ Yrs</div>
             <p style="font-size:0.875rem; color:#94a3b8; margin-top:0.5rem;">Leadership Construction Experience</p>
           </div>
           <div>
-            <div class="stat-num">18</div>
+            <div class="stat-num" data-target="18" data-start="0" data-decimals="0">0</div>
             <p style="font-size:0.875rem; color:#94a3b8; margin-top:0.5rem;">Texas Counties Officially Served</p>
           </div>
         </div>
@@ -2066,6 +2066,76 @@ function renderPublicWebsite() {
         }
       });
     }
+
+    // Animated Statistics Counter Effect on First Visit / View
+    (function initStatCounters() {
+      const statElements = document.querySelectorAll('.stat-num[data-target]');
+      if (!statElements.length) return;
+
+      const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        statElements.forEach(el => {
+          const target = el.getAttribute('data-target');
+          const suffix = el.getAttribute('data-suffix') || '';
+          el.textContent = target + suffix;
+        });
+        return;
+      }
+
+      let animated = false;
+
+      function runCounterAnimation() {
+        if (animated) return;
+        animated = true;
+
+        statElements.forEach(el => {
+          const target = parseFloat(el.getAttribute('data-target'));
+          const startVal = parseFloat(el.getAttribute('data-start') || '0');
+          const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+          const suffix = el.getAttribute('data-suffix') || '';
+          const duration = 1800; // 1.8 seconds duration for smooth effect
+          const startTime = performance.now();
+
+          function tick(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Smooth ease-out cubic curve
+            const ease = 1 - Math.pow(1 - progress, 3);
+            const current = startVal + (target - startVal) * ease;
+
+            el.textContent = (decimals > 0 ? current.toFixed(decimals) : Math.round(current)) + suffix;
+
+            if (progress < 1) {
+              requestAnimationFrame(tick);
+            } else {
+              el.textContent = (decimals > 0 ? target.toFixed(decimals) : target) + suffix;
+            }
+          }
+
+          requestAnimationFrame(tick);
+        });
+      }
+
+      // Trigger with IntersectionObserver when scrolled into view
+      if ('IntersectionObserver' in window) {
+        const statsSection = document.getElementById('statsSection') || document.querySelector('.stats-strip');
+        if (statsSection) {
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                runCounterAnimation();
+                observer.disconnect();
+              }
+            });
+          }, { threshold: 0.2 });
+          observer.observe(statsSection);
+        } else {
+          runCounterAnimation();
+        }
+      } else {
+        runCounterAnimation();
+      }
+    })();
   </script>
 </body>
 </html>`;
